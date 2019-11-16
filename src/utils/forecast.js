@@ -11,7 +11,7 @@ const weather = (lat, long, callback) => {
             callback('data not found', undefined)
         }
         else{
-            callback(undefined, 'It is currently '+ body.daily.data[0].summary +' There is '+body.daily.data[0].precipProbability+' % chance of rain')
+            callback(undefined, 'Time is '+ body.daily.data[0].time + ' It is currently '+ body.daily.data[0].summary +' There is '+body.daily.data[0].precipProbability+' % chance of rain')
         }
     })
 }
