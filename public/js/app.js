@@ -11,7 +11,7 @@ const p2 = document.querySelector('#p2')
 
 formData.addEventListener('submit', (e) => {
     e.preventDefault()
-    fetch('http://localhost:3000/weather?address='+search.value).then((response) => {
+    fetch('/weather?address='+search.value).then((response) => {
         response.json().then((data) => {
             if(data.err){
                 p1.textContent = data.err
