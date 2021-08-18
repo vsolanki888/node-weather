@@ -1,92 +1,85 @@
 const path = require('path')
 const express = require('express')
 const hbs = require('hbs')
-const geocode = require('./utils/geocode')
-const forecast = require('./utils/forecast')
-const port = process.env.PORT || 3000
+const geocode = require('./util/geocode')
+const forecast = require('./util/forecast')
+const port = process.env.PORT || 3000;
 
 const app = express()
-const publicPath = path.join(__dirname, '../public')
-const tempPath = path.join(__dirname, '../templates/views')
-const partialPath = path.join(__dirname, '../templates/partials')
-
 app.set('view engine', 'hbs')
-app.set('views', tempPath)
-hbs.registerPartials(partialPath)
+app.set('views', path.join(__dirname, '../templates/views'))
+hbs.registerPartials(path.join(__dirname, '../templates/partials'))
 
-app.use(express.static(publicPath))
+app.use(express.static(path.join(__dirname, '../public')))
 
-
-app.get('', (req, res) => {
+app.get('/', (req, res) => {
     res.render('index', {
-        title:'Weather',
-        name:'Weather-vishal'
+        'title':'Weather',
+        'name':'vishal solanki'
     })
 })
 
-app.get('/about', (req, res) =>{
-    res.render('about', {
-        title:'About me',
-        name:'About-vishal'
-    })
-})
-
-app.get('/help', (req,res) => {
-    res.render('help', {
-        title:'Help Me',
-        name: 'Help-vishal'
-    })
-})
-
-app.get('/weather', (req,res) => {
+app.get('/weather', (req, res) => {
     if(!req.query.address){
-        return res.send({error:'address must be provided'})
-    }
-
-    geoCode(req.query.address, (err, {latitude:lat,longitude:long,location:loc} = {}) =>{
-        if(err){
-            return res.send({err})
-        }
-
-        forecast(lat, long, (error, forecastData) => {
-            if(error){
-                return res.send({error})
-            }
-
-            res.send({
-                forecast: forecastData,
-                location: loc
-            })
-
-
+        return res.send({
+            status: 'error',
+            message: 'please provide address'
         })
-    })
-})
-
-app.get('/products', (req, res) => {
-    if(!req.query.search){
-        return res.send('search nhi aaya be') 
     }
-    res.send({
-        products:[]
+    geocode(req.query.address, (error, {longitute, latitude, location} = {}) => {
+        if(error){
+            return res.send({
+                status:'error',
+                message:error
+            })
+        }
+        else{
+            forecast(latitude, longitute, (error, data) => {
+                if(error){
+                    return res.send({
+                        status:'error',
+                        message:error
+                    })
+                }
+                else{                    
+                    res.send({forecast:data,location, address:req.query.address});
+                }
+            })
+        }
     })
 })
 
-app.get('/help/*', (req,res) => {
-    res.render('pnf',{
-        title:'Page Not Found',
-        name:'vishal solanki',
-        errorMsg:'Vishal help me bro'
+app.get('/about', (req, res) => {
+    res.render('about', {
+        'title':'about',
+        'name':'vishal solanki'
     })
 })
 
-app.get('*', (req,res) => {
-    res.render('pnf', {
-        title:'zero',
-        errorMsg:'wtf',
-        name:'vs'
+app.get('/help', (req, res) => {
+    res.render('help', {
+        'title':'about',
+        'helpText':'Please help people',
+        'name':'vishal solanki'
     })
 })
+
+app.get('/help/*', (req, res) => {
+    res.render('404',{
+        'title':'Page Not Found',
+        'errorMessage': 'Help Page not found',
+        'name':'vishal solanki'
+    })
+})
+
+app.get('/*', (req, res) => {
+    res.render('404',{
+        'title':'Page Not Found',
+        'errorMessage': 'Page not found',
+        'name':'vishal solanki'
+    })
+})
+
 app.listen(port, () => {
-    console.log('server is on port '+ port);
+    console.log('listening on '+port);
 })

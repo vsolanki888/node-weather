@@ -4,18 +4,15 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "node src/app.js",
-    "dev": "nodemon src/app.js -e js,hbs"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node ./src/app.js"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
     "express": "^4.17.1",
-    "hbs": "^4.0.6",
-    "request": "^2.88.0"
-  },
-  "devDependencies": {
-    "nodemon": "^1.19.4"
+    "hbs": "^4.1.2",
+    "request": "^2.88.2"
   }
 }

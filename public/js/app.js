@@ -1,26 +1,24 @@
-console.log('yes this is js')
-
-
-
-
-const formData = document.querySelector('form')
+console.log('client side js added')
+const weatherForm = document.querySelector('form')
 const search = document.querySelector('input')
-const p1 = document.querySelector('#p1')
-const p2 = document.querySelector('#p2')
 
-
-formData.addEventListener('submit', (e) => {
-    e.preventDefault()
-    fetch('/weather?address='+search.value).then((response) => {
+const messageOne = document.querySelector('#message-1')
+const messageTwo = document.querySelector('#message-2')
+weatherForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+    console.log(search.value);
+    const location = search.value;
+    messageOne.textContent = 'Loading.........'
+    messageTwo.textContent = ''
+    fetch('/weather?address='+location).then(response => {
         response.json().then((data) => {
-            if(data.err){
-                p1.textContent = data.err
-                p2.textContent = ''
-
+            console.log(data);
+            if(data.status == 'error'){
+                messageOne.textContent = data.message
             }
-            else{                
-                p1.textContent = data.location
-                p2.textContent = data.forecast
+            else{
+                messageOne.textContent = data.location
+                messageTwo.textContent = data.forecast
             }
         })
     })
